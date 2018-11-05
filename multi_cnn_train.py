@@ -21,6 +21,16 @@ def conv2d(x,w):
     return tf.nn.conv2d(x,w,strides=[1,1,1,1],padding='SAME')
     pass
 
+'''
+对于conv2d的参数，strides=[b,h,w,c]，代表每一维度的步长
+对于pooling的参数，strides=[b,h,w,c]，其中strides[0]和strides[3]默认为1。
+b表示在样本上的步长默认为1，也就是每一个样本都会进行运算。
+h表示在高度上的默认移动步长为1，这个可以自己设定，根据网络的结构合理调节。
+w表示在宽度上的默认移动步长为1，这个同上可以自己设定。
+c表示在通道上的默认移动步长为1，这个表示每一个通道都会进行运算
+
+对于ksize,同样代表每一维度的大小
+'''
 def max_pool_2x2(x):
     return tf.nn.max_pool(x,ksize=[1,2,2,1],strides=[1,2,2,1],padding='SAME')
     pass
