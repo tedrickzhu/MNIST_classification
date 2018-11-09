@@ -96,8 +96,8 @@ Z_dim = 100
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 
-if not os.path.exists('out/'):
-    os.makedirs('out/')
+if not os.path.exists('output/'):
+    os.makedirs('output/')
 i=0
 for it in range(10000):
     if it %100==0:
