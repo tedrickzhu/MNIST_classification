@@ -5,7 +5,7 @@ __author__ = 'Ethan'
 import tensorflow as tf
 import numpy as np
 import os
-import matplotlib as plt
+import matplotlib.pyplot as plt
 from matplotlib import gridspec
 from tensorflow.examples.tutorials.mnist import input_data
 
@@ -64,7 +64,7 @@ def sample_Z(m,n):
 
 def plot(samples):
     fig = plt.figure(figsize=(4,4))
-    gs = gridspec.GreSpec(4,4)
+    gs = gridspec.GridSpec(4,4)
     gs.update(wspace=0.05,hspace=0.05)
 
     for i,sample in enumerate(samples):
@@ -82,9 +82,9 @@ D_real,D_logit_real = discriminator(X)
 D_fake,D_logit_fake = discriminator(G_sample)
 
 D_loss_real = tf.reduce_mean(
-    tf.nn.sigmoid_cross_entropy_with_logits(logits=D_logit_real, targets=tf.ones_like(D_logit_real)))
+    tf.nn.sigmoid_cross_entropy_with_logits(logits=D_logit_real, labels=tf.ones_like(D_logit_real)))
 D_loss_fake = tf.reduce_mean(
-    tf.nn.sigmoid_cross_entropy_with_logits(logits=D_logit_fake, targets=tf.zeros_like(D_logit_fake)))
+    tf.nn.sigmoid_cross_entropy_with_logits(logits=D_logit_fake, labels=tf.zeros_like(D_logit_fake)))
 D_loss = D_logit_real+D_loss_fake
 G_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=D_logit_fake,labels=tf.ones_like(D_logit_fake)))
 
@@ -96,15 +96,15 @@ Z_dim = 100
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 
-if not os.path.exists('output/'):
-    os.makedirs('output/')
+if not os.path.exists('./output/'):
+    os.makedirs('./output/')
 i=0
-for it in range(10000):
-    if it %100==0:
+for it in range(100000):
+    if it %1000==0:
         samples = sess.run(G_sample,feed_dict={Z:sample_Z(16,Z_dim)})
 
         fig = plot(samples)
-        plt.savefig('out/{}.png'.format(str(i).zfill(3)),bbox_inches='tight')
+        plt.savefig('./output/{}.png'.format(str(i).zfill(3)),bbox_inches='tight')
         i+=1
         plt.close(fig)
     X_mb,_ = mnist.train.next_batch(mb_size)
@@ -112,10 +112,10 @@ for it in range(10000):
     _, D_loss_curr = sess.run([D_solver, D_loss], feed_dict={X:X_mb,Z:sample_Z(mb_size,Z_dim)})
     _, G_loss_curr = sess.run([G_solver, G_loss], feed_dict={Z: sample_Z(mb_size, Z_dim)})
 
-    if it % 100==0:
+    if it % 1000==0:
         print('iter:{}'.format(it))
-        print('D loss:{:.4}'.format(D_loss_curr))
-        print('G loss:{:.4}'.format(G_loss_curr))
+        print('D loss:{!s:4}'.format(D_loss_curr))
+        print('G loss:{!s:4}'.format(G_loss_curr))
 
 
 
