@@ -1,7 +1,8 @@
 #encoding=utf-8
 #time=18-11-9 上午11:53
 __author__ = 'Ethan'
-
+import time
+import cv2
 import tensorflow as tf
 import numpy as np
 import os
@@ -31,9 +32,7 @@ theta_G = [G_W1,G_W2,G_b1,G_b2]
 #判别模型的输入和参数初始化
 #input data
 X = tf.placeholder(tf.float32,shape=[None,784])
-#权值
 D_W1 = tf.Variable(xavier_init([784,128]))
-#偏移量biaes
 D_b1 = tf.Variable(tf.zeros(shape=[128]))
 D_W2 = tf.Variable(xavier_init([128,1]))
 D_b2 = tf.Variable(tf.zeros(shape=[1]))
@@ -44,7 +43,6 @@ def generator(z):
     G_h1 = tf.nn.relu(tf.matmul(z,G_W1)+G_b1)
     G_log_prob = tf.matmul(G_h1,G_W2)+G_b2
     G_prob = tf.nn.sigmoid(G_log_prob)
-
     return G_prob
 
 #判别模型
@@ -68,6 +66,9 @@ def plot(samples):
     gs.update(wspace=0.05,hspace=0.05)
 
     for i,sample in enumerate(samples):
+        # print('single sample type and shape:  ',type(sample),sample.shape)
+        # sample = np.reshape(sample,(28,28))
+        # cv2.imwrite('./output/'+str(i).zfill(6)+'_'+str(time)+'.png',sample)
         ax = plt.subplot(gs[i])
         plt.axis('off')
         ax.set_xticklabels([])
@@ -83,7 +84,7 @@ D_fake,D_logit_fake = discriminator(G_sample)
 
 D_loss_real = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=D_logit_real, labels=tf.ones_like(D_logit_real)))
 D_loss_fake = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=D_logit_fake, labels=tf.zeros_like(D_logit_fake)))
-D_loss = D_logit_real+D_loss_fake
+D_loss = D_loss_real+D_loss_fake
 
 G_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=D_logit_fake,labels=tf.ones_like(D_logit_fake)))
 
