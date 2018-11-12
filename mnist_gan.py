@@ -102,7 +102,7 @@ i=0
 for it in range(100000):
     if it %1000==0:
         samples = sess.run(G_sample,feed_dict={Z:sample_Z(16,Z_dim)})
-        print(type(samples),samples.shape)
+        # print(type(samples),samples.shape)
         fig = plot(samples)
         plt.savefig('./output/{}.png'.format(str(i).zfill(3)),bbox_inches='tight')
         i+=1
@@ -114,8 +114,8 @@ for it in range(100000):
     # print(a,'adfasdfasdf',b)#均为None
     if it % 1000==0:
         print('iter:{}'.format(it))
-        # print('D loss:{!s:4}'.format(D_loss_curr))
-        print(type(D_loss_curr),D_loss_curr.shape)
+        print('D loss:{!s:4}'.format(D_loss_curr))
+        # print(type(D_loss_curr),D_loss_curr.shape)
         print('G loss:{!s:4}'.format(G_loss_curr))
 
 
