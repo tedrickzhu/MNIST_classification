@@ -81,11 +81,10 @@ G_sample = generator(Z)
 D_real,D_logit_real = discriminator(X)
 D_fake,D_logit_fake = discriminator(G_sample)
 
-D_loss_real = tf.reduce_mean(
-    tf.nn.sigmoid_cross_entropy_with_logits(logits=D_logit_real, labels=tf.ones_like(D_logit_real)))
-D_loss_fake = tf.reduce_mean(
-    tf.nn.sigmoid_cross_entropy_with_logits(logits=D_logit_fake, labels=tf.zeros_like(D_logit_fake)))
+D_loss_real = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=D_logit_real, labels=tf.ones_like(D_logit_real)))
+D_loss_fake = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=D_logit_fake, labels=tf.zeros_like(D_logit_fake)))
 D_loss = D_logit_real+D_loss_fake
+
 G_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=D_logit_fake,labels=tf.ones_like(D_logit_fake)))
 
 D_solver = tf.train.AdamOptimizer().minimize(D_loss,var_list=theta_D)
@@ -102,19 +101,20 @@ i=0
 for it in range(100000):
     if it %1000==0:
         samples = sess.run(G_sample,feed_dict={Z:sample_Z(16,Z_dim)})
-
+        print(type(samples),samples.shape)
         fig = plot(samples)
         plt.savefig('./output/{}.png'.format(str(i).zfill(3)),bbox_inches='tight')
         i+=1
         plt.close(fig)
     X_mb,_ = mnist.train.next_batch(mb_size)
 
-    _, D_loss_curr = sess.run([D_solver, D_loss], feed_dict={X:X_mb,Z:sample_Z(mb_size,Z_dim)})
-    _, G_loss_curr = sess.run([G_solver, G_loss], feed_dict={Z: sample_Z(mb_size, Z_dim)})
-
+    _,D_loss_curr = sess.run([D_solver, D_loss], feed_dict={X:X_mb,Z:sample_Z(mb_size,Z_dim)})
+    _,G_loss_curr = sess.run([G_solver, G_loss], feed_dict={Z: sample_Z(mb_size, Z_dim)})
+    # print(a,'adfasdfasdf',b)#均为None
     if it % 1000==0:
         print('iter:{}'.format(it))
-        print('D loss:{!s:4}'.format(D_loss_curr))
+        # print('D loss:{!s:4}'.format(D_loss_curr))
+        print(type(D_loss_curr),D_loss_curr.shape)
         print('G loss:{!s:4}'.format(G_loss_curr))
 
 
