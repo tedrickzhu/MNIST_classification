@@ -7,6 +7,9 @@
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 
+'''
+这里的shape包含是个维度[kenel_h,kenel_w,input_dim,output_dim]
+'''
 def weight_variable(shape):
     initial = tf.truncated_normal(shape,stddev=0.1)
     return tf.Variable(initial)
@@ -17,6 +20,12 @@ def bias_variable(shape):
     return tf.Variable(initial)
     pass
 
+'''
+这里的参数padding，代表是否进行边缘填充，
+VALID表示，维持原图的尺寸输入，不填充，卷积操作，或者池化操作之后的特征图比原图尺寸缩小，
+缩小到（H-k+1)/s，H为原图高或者宽，k为卷积核或者池化核的大小，s为步长，计算结果向上取整
+SAME表示用0进行填充，进行卷积或者池化之后的特征图与原图尺寸相同
+'''
 def conv2d(x,w):
     return tf.nn.conv2d(x,w,strides=[1,1,1,1],padding='SAME')
     pass
@@ -29,7 +38,7 @@ h表示在高度上的默认移动步长为1，这个可以自己设定，根据
 w表示在宽度上的默认移动步长为1，这个同上可以自己设定。
 c表示在通道上的默认移动步长为1，这个表示每一个通道都会进行运算
 
-对于ksize,同样代表每一维度的大小
+对于ksize,同样代表池化核的每一维度的大小,
 '''
 def max_pool_2x2(x):
     return tf.nn.max_pool(x,ksize=[1,2,2,1],strides=[1,2,2,1],padding='SAME')
